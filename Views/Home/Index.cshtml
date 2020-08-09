@@ -1,0 +1,105 @@
+﻿@model Translations
+
+<div class="table-responsive">
+    <table class="table table-striped table-bordered table-condensed table-hover" style="width:1080px;">
+        <tr>
+            <th style="width: 8%">
+                @Html.DisplayName("Key")
+            </th>
+
+            @{if (Context.Session.GetObjectFromJson<User>("user") != null)
+                {
+                    var languages = (Context.Session.GetObjectFromJson<User>("user") as User).GetEnabledLanguages();
+                    foreach (var lng in languages)
+                    {
+                        <th>
+                            @Html.Raw(lng)
+                        </th>
+                    }
+                }
+            }
+        </tr>
+        @{if (Context.Session.GetObjectFromJson<User>("user") != null)
+            {
+                var languages = (Context.Session.GetObjectFromJson<User>("user") as User).GetEnabledLanguages();
+                var editLanguages = (Context.Session.GetObjectFromJson<User>("user") as User).GetEditableLanguages();
+
+                foreach (var item in Model.Keys)
+                {
+                    <tr>
+                        <td>
+                            <p>@Html.Raw(item.Key) </p>
+                        </td>
+                        @foreach (var lng in languages)
+                        {
+                            <td  @if (editLanguages.Contains(lng)) { @Html.Raw("class=\"edt\"   style=\"cursor:cell;\"")} else { @Html.Raw("style=\"cursor:not-allowed;\"")} cl-id="@Html.Raw(lng)" cl-key="@Html.Raw(item.Key)">
+@Html.Raw(Model.Languages.Where(i => i.Key == item.Key && i.Lng == lng).DefaultIfEmpty(new Translation() { Value = String.Empty }).FirstOrDefault().Value)
+</td>
+                        }
+                    </tr>
+                }
+
+            }
+        }
+    </table>
+
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" id="myModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Text</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="language" name="language" value="">
+                <input type="hidden" id="key" name="key" value="">
+                <textarea id="editTxt" class="form-control" style="min-width: 100%"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="saveBtn">Save</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>f
+    </div>
+</div>
+@section Scripts{
+
+    <script>
+
+        var editingElement;
+        $('.edt').click(function (e) {
+            $('#myModal').modal('show');
+            $('#editTxt').val(this.textContent.trim());
+            $('#language').val($(this).attr('cl-id'));
+            $('#key').val($(this).attr('cl-key'));
+            $('#editTxt').focus();
+            editingElement = this;
+        });
+
+        $('#saveBtn').click(function () {
+
+            $.ajax({
+                type: 'POST',
+                url: '/Home/UpdateValue',
+                data: {
+                    Key: $('#key').val(),
+                    Lng: $('#language').val(),
+                    Value: $('#editTxt').val(),
+                   
+                },
+                success: function () {
+                    editingElement.textContent = ($('#editTxt').val());
+                    $('#myModal').modal('hide');
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+}
