@@ -1,7 +1,13 @@
-﻿using System;
+﻿/*****************************************************************
+ XML TRANSLATION MANAGER
+ A SIMPLE TOOL TO HELP MAINTAIN XML TRANSLATION FILES
+
+ AUTHOR: RICARDO LOPES
+ 
+ ****************************************************************/
+
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 using XMLEditor.Models;
 
