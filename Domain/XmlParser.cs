@@ -33,7 +33,7 @@ namespace XMLEditor.Domain
 
             return lst;
         }
-            public List<Translation> GetTranslationFromXML(String languageCode)
+        public List<Translation> GetTranslationFromXML(String languageCode)
         {
 
             XDocument xdoc = XDocument.Load("appdata/lng-" + languageCode + ".xml");
@@ -56,47 +56,7 @@ namespace XMLEditor.Domain
                 lst.Add(new Translation() { Lng= languageCode, Key = name, Value = text });
              
             }
-
             return lst;
-
-            xdoc = XDocument.Load(@"appdata\lng-en-us.xml");
-
-            dic = xdoc.Descendants("map").Descendants("add");
-
-            //var lst = new List<Translation>();
-            foreach (var n in dic)
-            {
-                var lng = "en-us";
-                var name = n.Attribute("name").Value;
-                var text = n.Attribute("text").Value;
-                lst.Add(new Translation() { Lng = lng, Key = name, Value = text });
-
-            }
-
-            xdoc = XDocument.Load(@"appdata\lng-es-es.xml");
-
-            dic = xdoc.Descendants("map").Descendants("add");
-
-            //var lst = new List<Translation>();
-            foreach (var n in dic)
-            {
-                try
-                {
-                    var lng = "es-es";
-                    var name = n.Attribute("name").Value;
-                    var text = n.Attribute("text").Value;
-                    lst.Add(new Translation() { Lng = lng, Key = name, Value = text });
-                }
-                catch (Exception)
-                {
-
-                    
-                }
-            }
-
-          
         }
-
-
     }
 }
